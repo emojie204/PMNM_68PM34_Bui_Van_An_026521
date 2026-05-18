@@ -1,0 +1,10 @@
+RewriteEngine On
+
+Options -Indexes
+
+# Cho phép truy cập file/thư mục thực tế nếu tồn tại
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Tất cả request đều đổ về index.php
+RewriteRule ^(.*)$ index.php?url=$1
