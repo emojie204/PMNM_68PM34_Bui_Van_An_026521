@@ -2,96 +2,41 @@
 
 class App
 {
-    protected $controller = 'home';
-    protected $action     = 'index';
-    protected $params     = [];
+    protected $controller = "HomeController";
+    protected $method = "index";
+    protected $params = [];
 
     public function __construct()
     {
-        // Lấy URL từ query string ?url=...
-        if (isset($_GET['url'])) {
-            // Làm sạch URL: xóa / thừa đầu/cuối, chuyển thường
-            $url = trim($_GET['url'], '/');
-            $url = strtolower($url);
-            $url = filter_var($url, FILTER_SANITIZE_URL);
+        $urlProcess = $this->urlProcess();
+        // var_dump($urlProcess);
+        // Xử lý controller
+        if (file_exists("../app/Controller/" . $urlProcess[0] . ".php")) {
+            $this->controller = $urlProcess[0];
+            unset($urlProcess[0]);
+        }
+        var_dump($this->controller);
 
-            // Tách URL thành mảng theo dấu /
-            // Ví dụ: "products/detail/5" → ['products', 'detail', '5']
-            $urlProcessed = explode('/', $url);
+        require_once "../app/Controller/" . $this->controller . ".php";
+        $this->controller = new $this->controller;
 
-            // --- Xác định Controller ---
-            if (isset($urlProcessed[0]) && $urlProcessed[0] !== '') {
-                $controllerFile = '../app/controllers/'
-                    . ucfirst($urlProcessed[0])
-                    . 'Controller.php';
-
-                if (file_exists($controllerFile)) {
-                    $this->controller = ucfirst($urlProcessed[0]) . 'Controller';
-                    var_dump($urlProcessed);
-                    unset($urlProcessed[0]);
-                } else {
-                    // Controller không tồn tại → load trang 404
-
-                    var_dump($urlProcessed);
-
-                    $this->controller = '404';
-                    $this->loadView('404');
-                    return;
-                }
-            }
-
-            // --- Xác định Action (method) ---
-            // Reset lại index mảng sau unset
-            $urlProcessed = array_values($urlProcessed);
-
-            if (isset($urlProcessed[0]) && $urlProcessed[0] !== '') {
-                // Kiểm tra method có tồn tại trong controller không
-                if (method_exists($this->controller, $urlProcessed[0])) {
-                    $this->action = $urlProcessed[0];
-                    unset($urlProcessed[0]);
-                } else {
-                    // Method không tồn tại → load trang 404
-                    $this->loadView('404');
-                    return;
-                }
-            }
-
-            // --- Lấy các tham số còn lại ---
-            // Ví dụ: URL "products/detail/5/color/red" → params = ['5', 'color', 'red']
-            $urlProcessed = array_values($urlProcessed);
-            $this->params = $urlProcessed ?? [];
+        // Xử lý method
+        if (isset($urlProcess[1]) && method_exists($this->controller, $urlProcess[1])) {
+            $this->method = $urlProcess[1];
+            unset($urlProcess[1]);
         }
 
-        // --- Load Controller và gọi Action ---
-        $controllerFile = '../app/controllers/' . $this->controller . '.php';
+        // Xử lý params
+        $this->params = $urlProcess ? array_values($urlProcess) : [];
 
-        if (file_exists($controllerFile)) {
-            require_once $controllerFile;
-
-            // Khởi tạo controller
-            $controller = new $this->controller();
-
-            // Gọi action với các tham số
-            if (method_exists($controller, $this->action)) {
-                call_user_func_array([$controller, $this->action], $this->params);
-            } else {
-                $this->loadView('404');
-            }
-        } else {
-            $this->loadView('404');
-        }
+        // Gọi controller và method với params
+        call_user_func_array([$this->controller, $this->method], $this->params);
     }
-
-    // --- Helper: Load view trực tiếp (dùng cho 404, lỗi, v.v.) ---
-    private function loadView($view)
+    public function urlProcess()
     {
-        $viewFile = '../app/views/' . $view . '.php';
-
-        if (file_exists($viewFile)) {
-            require_once $viewFile;
-        } else {
-            http_response_code(404);
-            echo "<h1>404 - Trang không tồn tại</h1>";
+        if (isset($_GET['url'])) {
+            return explode('/', filter_var(rtrim($_GET['url'], '/'), FILTER_SANITIZE_URL));
         }
+        return [];
     }
 }
