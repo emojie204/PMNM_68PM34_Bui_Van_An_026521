@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ .'/../App/Core/DB.php';
+require_once __DIR__ . '/../Core/DB.php';
 class SinhvienModel{
     private $conn;
     public function __construct(){
@@ -14,11 +14,11 @@ class SinhvienModel{
     public function create($data){
         $query = "INSERT INTO sinhvien (mssv, hoten, gioitinh) VALUES (:mssv, :hoten, :gioitinh)";
         $stmt = $this->conn->prepare($query);
-        if($stmt->execute()){
-            return true;
-        } else {
-            return false;
-        }
+        return $stmt->execute([
+            ':mssv' => $data['mssv'],
+            ':hoten' => $data['hoten'],
+            ':gioitinh' => $data['gioitinh'],
+        ]);
     }
 }   
 ?>

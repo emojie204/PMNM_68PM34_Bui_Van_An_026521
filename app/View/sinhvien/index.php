@@ -15,11 +15,15 @@
             <th>Họ tên</th>
             <th>Giới tính</th>
         </tr>
-        <?php
-        // foreach ($sinhvien as $sv): 
-        ?>
+        <?php foreach ($sinhvien as $i => $sv): ?>
+        <tr>
+        <td><?= $i + 1 ?></td>
+        <td><?= htmlspecialchars($sv['mssv']) ?></td>
+        <td><?= htmlspecialchars($sv['hoten']) ?></td>
+        <td><?= htmlspecialchars($sv['gioitinh']) ?></td>
+        </tr>
         <?php 
-        // endforeach; 
+        endforeach; 
         ?>
     </table>
 </body>
