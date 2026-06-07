@@ -8,7 +8,16 @@
 </head>
 
 <body>
+    
     <?php
+    if (file_exists("../app/Core/Controller.php")) {
+        require_once "../app/Core/Controller.php";
+    }
+    
+    if (file_exists("../app/Core/DB.php")) {
+        require_once "../app/Core/DB.php";
+    }
+
     require_once "../app/Core/App.php";
     $app = new App();
     ?>
