@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Thêm sinh viên</h1>
-    <form action="/sinhvien/store" method="POST">
+    <form action="/StudentController/save" method="POST">
         <label for="mssv">MSSV:</label>
         <input type="text" id="mssv" name="mssv" required><br><br>
 
