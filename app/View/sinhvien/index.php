@@ -27,6 +27,7 @@
                     <th>MSSV</th>
                     <th>Họ tên</th>
                     <th>Giới tính</th>
+                    <th style="text-align: center;">Hành động</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,6 +50,18 @@
                             <?= htmlspecialchars($sv['gioitinh']) ?>
                         </span>
                     </td>
+                    <td style="text-align: center;">
+                    <a href="/StudentController/edit/<?= urlencode($sv['mssv']) ?>" 
+                       style="color: #007bff; text-decoration: none; margin-right: 15px;">
+                        ✏️ Sửa
+                    </a>
+                    
+                    <a href="/StudentController/delete/<?= urlencode($sv['mssv']) ?>" 
+                       style="color: #dc3545; text-decoration: none;"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa sinh viên này không?');">
+                        ❌ Xóa
+                    </a>
+                </td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

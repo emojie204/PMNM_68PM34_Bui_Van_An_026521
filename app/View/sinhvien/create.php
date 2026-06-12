@@ -15,7 +15,11 @@
         <input type="text" id="hoten" name="hoten" required><br><br>
 
         <label for="gioitinh">Giới tính:</label>
-        <input type="text" id="gioitinh" name="gioitinh" required><br><br>
+        <select id="gioitinh" name="gioitinh" required>
+            <option value="Nam">Nam</option>
+            <option value="Nữ" >Nữ</option>
+            <option value="Khác" >Khác</option>
+        </select><br><br>
 
         <button type="submit">Thêm</button>
 </body>

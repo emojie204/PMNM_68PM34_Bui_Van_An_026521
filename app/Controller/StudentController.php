@@ -69,4 +69,63 @@ class StudentController extends Controller
             exit;
         }
     }
+    public function edit($mssv) 
+    {
+        $username = $_SESSION['username'] ?? 'Khách';
+        $title = 'Chỉnh sửa thông tin sinh viên';
+
+        $model = new SinhvienModel();
+        $sinhvien = $model->find($mssv);
+        if (!$sinhvien) {
+            $_SESSION['error'] = 'Không tìm thấy sinh viên này!';
+            header('Location: /sinhvien');
+            exit;
+        }
+        ob_start();
+        require __DIR__ . '/../View/sinhvien/edit.php';  
+        $content = ob_get_clean();
+        require __DIR__ . '/../View/layout/masterlayout.php';
+    }
+    public function update()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: /sinhvien');
+            exit;
+        }
+        $data = [
+            'mssv'     => trim($_POST['mssv'] ?? ''),
+            'hoten'    => trim($_POST['hoten'] ?? ''),
+            'gioitinh' => trim($_POST['gioitinh'] ?? '')
+        ];
+        if (empty($data['mssv']) || empty($data['hoten']) || empty($data['gioitinh'])) {
+            $_SESSION['error'] = 'Vui lòng nhập đầy đủ thông tin!';
+            header('Location: /sinhvien/edit/' . $data['mssv']);
+            exit;
+        }
+        $model = new SinhvienModel();
+        $result = $model->update($data); 
+        if ($result) {
+            $_SESSION['success'] = 'Cập nhật thông tin sinh viên thành công!';
+            header('Location: /sinhvien');    
+            exit;
+        } else {
+            $_SESSION['error'] = 'Cập nhật thất bại! Vui lòng thử lại.';
+            header('Location: /sinhvien/edit/' . $data['mssv']);
+            exit;
+        }
+    }
+    public function delete($mssv)
+    {
+        $model = new SinhvienModel();
+        $result = $model->delete($mssv);
+
+        if ($result) {
+            $_SESSION['success'] = 'Xóa sinh viên thành công!';
+        } else {
+            $_SESSION['error'] = 'Xóa sinh viên thất bại!';
+        }
+
+        header('Location: /sinhvien');
+        exit;
+    }
 }

@@ -30,6 +30,14 @@ class SinhvienModel{
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function find($mssv) {
+        $query = "SELECT * FROM sinhvien WHERE mssv = :mssv LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([
+            ':mssv' => $mssv
+        ]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     public function create($data){
         $query = "INSERT INTO sinhvien (mssv, hoten, gioitinh) VALUES (:mssv, :hoten, :gioitinh)";
         $stmt = $this->conn->prepare($query);
@@ -37,6 +45,22 @@ class SinhvienModel{
             ':mssv' => $data['mssv'],
             ':hoten' => $data['hoten'],
             ':gioitinh' => $data['gioitinh'],
+        ]);
+    }
+    public function update($data){
+        $query = "UPDATE sinhvien SET hoten = :hoten, gioitinh = :gioitinh WHERE mssv = :mssv";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([
+            ':mssv'     => $data['mssv'],
+            ':hoten'    => $data['hoten'],
+            ':gioitinh' => $data['gioitinh']
+        ]);
+    }
+    public function delete($mssv) {
+        $query = "DELETE FROM sinhvien WHERE mssv = :mssv";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([
+            ':mssv' => $mssv
         ]);
     }
 }   
